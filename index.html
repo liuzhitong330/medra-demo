@@ -62,7 +62,7 @@ footer { font-family: system-ui, sans-serif; font-size: 0.82rem; color: #888; ma
   <div class="section-nav">
     <a href="#motivation">Motivation</a>
     <a href="#a1">Developability explorer</a>
-    <a href="#a2">Do flags predict success</a>
+    <a href="#a2">A leaner panel</a>
     <a href="#relevance">Relevance</a>
   </div>
 
@@ -122,21 +122,22 @@ footer { font-family: system-ui, sans-serif; font-size: 0.82rem; color: #888; ma
 
   <hr id="a2">
 
-  <h2>Analysis 2 &mdash; Do the flags predict success</h2>
+  <h2>Analysis 2 &mdash; A leaner panel catches most of the risk</h2>
   <div class="experiment">
     <div class="exp-label">Result</div>
-    <div class="exp-title">Developability burden falls as antibodies reach approval</div>
+    <div class="exp-title">Four assays flag 80% of what the full twelve would</div>
   </div>
   <div class="panel">
-    <span class="label-inline">share of antibodies carrying two or more red flags, by clinical stage &middot; click a bar for an example</span>
+    <span class="label-inline">cumulative share of flagged antibodies caught, adding assays in the most informative order &middot; click a row for an example it catches</span>
     <div class="bars" id="bars"></div>
   </div>
   <p>
-    The antibodies that reached approval are the cleanest of the set. They average about 0.75 red flags, and only
-    around a quarter carry two or more, against nearly half of the phase-2 candidates. The same cheap bench assays
-    that a Research Associate runs in a day front-load a signal about which molecules will behave, years before the
-    clinic settles it. That is the case for building the panel into an autonomous platform: it turns a slow, expensive
-    verdict into a same-day one.
+    The twelve assays are far from independent, so they reach diminishing returns quickly. Ranked by how many new
+    flagged molecules each one catches, just four assays &mdash; AC-SINS, HIC, Fab Tm, and a non-specific ELISA &mdash;
+    flag about 80% of every antibody the full panel would, and six get past 90%. For an autonomous platform that is a
+    real throughput lever: run a lean front-line panel on everything, and spend the slower, costlier assays only on
+    the molecules that clear it. The full twelve then collapse onto a few axes, expression, stability, hydrophobicity,
+    and self-interaction.
   </p>
 
   <hr id="relevance">
