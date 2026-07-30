@@ -104,29 +104,36 @@
   }
   window.pick=pick;
 
-  // Analysis 2: developability burden by clinical stage (does the panel predict success?)
+  // Analysis 2: how few assays recover most of the flagged molecules (greedy set cover)
   (function(){
-    var GROUPS=[
-      {key:"Approved", label:"Approved", col:"#3a7d54"},
-      {key:"Phase 3",  label:"Phase 3",  col:"#c08a2a"},
-      {key:"Phase 2",  label:"Phase 2",  col:FLAG}
-    ];
+    var risky=names.filter(function(n){return ABS[n].nf>=1;});
+    var R=risky.length;
+    var covered={}, remaining=ASSAYS.slice(), curve=[];
+    while(remaining.length){
+      var best=null, bestNew=null, bestGain=-1;
+      remaining.forEach(function(a){
+        var newly=risky.filter(function(n){return !covered[n] && ABS[n].f[a]===1;});
+        if(newly.length>bestGain){bestGain=newly.length; best=a; bestNew=newly;}
+      });
+      if(bestGain<=0) break;
+      bestNew.forEach(function(n){covered[n]=1;});
+      var cov=0; for(var k in covered) cov++;
+      // example: the newly-caught antibody with the most flags
+      var rep=bestNew.slice().sort(function(a,b){return ABS[b].nf-ABS[a].nf;})[0];
+      curve.push({assay:best, pct:Math.round(100*cov/R), rep:rep});
+      remaining=remaining.filter(function(a){return a!==best;});
+      if(cov>=R) break;
+    }
     var box=document.getElementById("bars");
-    GROUPS.forEach(function(g){
-      var members=names.filter(function(n){return (ABS[n].status||"")===g.key;});
-      if(!members.length) return;
-      var nf=members.map(function(n){return ABS[n].nf;});
-      var mean=nf.reduce(function(a,b){return a+b;},0)/members.length;
-      var risky=nf.filter(function(x){return x>=2;}).length;
-      var pct=100*risky/members.length;
-      // representative example: cleanest for Approved, worst for others
-      var rep=members.slice().sort(function(a,b){ return g.key==="Approved" ? ABS[a].nf-ABS[b].nf : ABS[b].nf-ABS[a].nf; })[0];
+    curve.forEach(function(c,i){
+      var core = (i<4);                       // first four assays reach ~80%
+      var col = core ? ACC : "#9aa0c0";
       var row=document.createElement("div"); row.className="brow";
-      row.innerHTML='<div class="bname">'+g.label+'</div>'
-        +'<div class="btrack"><div class="bfill" style="width:'+pct.toFixed(0)+'%;background:'+g.col+'"></div></div>'
-        +'<div class="bnum">'+pct.toFixed(0)+'% risky &middot; '+mean.toFixed(2)+' avg</div>';
-      row.title="click for an example: "+rep;
-      row.onclick=(function(n){return function(){pick(n);var p=document.getElementById("scatter").closest(".panel");if(p)p.scrollIntoView({behavior:"smooth",block:"start"});};})(rep);
+      row.innerHTML='<div class="bname">'+(i+1)+'. '+c.assay+'</div>'
+        +'<div class="btrack"><div class="bfill" style="width:'+c.pct+'%;background:'+col+'"></div></div>'
+        +'<div class="bnum">'+c.pct+'% of flagged'+(i===3?' &larr; 4 assays':'')+'</div>';
+      row.title="example caught by "+c.assay+": "+c.rep;
+      row.onclick=(function(n){return function(){pick(n);var p=document.getElementById("scatter").closest(".panel");if(p)p.scrollIntoView({behavior:"smooth",block:"start"});};})(c.rep);
       box.appendChild(row);
     });
   })();
