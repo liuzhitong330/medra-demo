@@ -104,20 +104,29 @@
   }
   window.pick=pick;
 
-  // Analysis 2: rank by number of flags (top 15 riskiest)
+  // Analysis 2: developability burden by clinical stage (does the panel predict success?)
   (function(){
-    var rows=names.map(function(n){return [n, ABS[n].nf, ABS[n].status];});
-    rows.sort(function(a,b){return b[1]-a[1];});
-    var top=rows.slice(0,15), mx=12;
+    var GROUPS=[
+      {key:"Approved", label:"Approved", col:"#3a7d54"},
+      {key:"Phase 3",  label:"Phase 3",  col:"#c08a2a"},
+      {key:"Phase 2",  label:"Phase 2",  col:FLAG}
+    ];
     var box=document.getElementById("bars");
-    top.forEach(function(r){
-      var appr = (r[2]||"").toLowerCase()==="approved";
-      var col = appr? "#5a8f6b" : FLAG;
+    GROUPS.forEach(function(g){
+      var members=names.filter(function(n){return (ABS[n].status||"")===g.key;});
+      if(!members.length) return;
+      var nf=members.map(function(n){return ABS[n].nf;});
+      var mean=nf.reduce(function(a,b){return a+b;},0)/members.length;
+      var risky=nf.filter(function(x){return x>=2;}).length;
+      var pct=100*risky/members.length;
+      // representative example: cleanest for Approved, worst for others
+      var rep=members.slice().sort(function(a,b){ return g.key==="Approved" ? ABS[a].nf-ABS[b].nf : ABS[b].nf-ABS[a].nf; })[0];
       var row=document.createElement("div"); row.className="brow";
-      row.innerHTML='<div class="bname" title="'+r[0]+'">'+r[0]+'</div>'
-        +'<div class="btrack"><div class="bfill" style="width:'+(100*r[1]/mx).toFixed(1)+'%;background:'+col+'"></div></div>'
-        +'<div class="bnum">'+r[1]+'/12 &middot; '+(r[2]||"clinical")+'</div>';
-      row.onclick=(function(n){return function(){pick(n);window.scrollTo({top:0,behavior:"smooth"});};})(r[0]);
+      row.innerHTML='<div class="bname">'+g.label+'</div>'
+        +'<div class="btrack"><div class="bfill" style="width:'+pct.toFixed(0)+'%;background:'+g.col+'"></div></div>'
+        +'<div class="bnum">'+pct.toFixed(0)+'% risky &middot; '+mean.toFixed(2)+' avg</div>';
+      row.title="click for an example: "+rep;
+      row.onclick=(function(n){return function(){pick(n);window.scrollTo({top:0,behavior:"smooth"});};})(rep);
       box.appendChild(row);
     });
   })();
