@@ -126,7 +126,7 @@
         +'<div class="btrack"><div class="bfill" style="width:'+pct.toFixed(0)+'%;background:'+g.col+'"></div></div>'
         +'<div class="bnum">'+pct.toFixed(0)+'% risky &middot; '+mean.toFixed(2)+' avg</div>';
       row.title="click for an example: "+rep;
-      row.onclick=(function(n){return function(){pick(n);window.scrollTo({top:0,behavior:"smooth"});};})(rep);
+      row.onclick=(function(n){return function(){pick(n);var p=document.getElementById("scatter").closest(".panel");if(p)p.scrollIntoView({behavior:"smooth",block:"start"});};})(rep);
       box.appendChild(row);
     });
   })();
