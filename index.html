@@ -2,375 +2,176 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AI-Assisted Protein Characterization Workflow Analysis — Cathy Liu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exploratory Analyses Inspired by Medra</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Georgia,serif;max-width:700px;margin:0 auto;padding:2.5rem 1.5rem;line-height:1.7;color:#222;background:#fff;font-size:1.02rem}
-h1{font-size:1.55rem;line-height:1.3;margin-bottom:.6rem;font-weight:normal}
-h2{font-size:1.18rem;margin:2.4rem 0 .6rem;border-bottom:1px solid #eee;padding-bottom:.3rem;font-weight:normal}
-h3{font-size:1rem;margin:1.4rem 0 .4rem;font-weight:bold}
-p{margin:.8rem 0}
-.byline{color:#777;font-size:.88rem;margin-bottom:2rem;font-family:system-ui,sans-serif}
-.byline a{color:#777}
-.tag{display:inline-block;background:#f2f2f2;padding:.15rem .5rem;border-radius:3px;font-size:.78rem;font-family:system-ui,sans-serif;color:#555;margin-right:.3rem}
-
-/* AI output blocks */
-.ai-box{background:#fafafa;border-left:3px solid #c8d8e8;padding:1rem 1.2rem;margin:1rem 0;font-size:.9rem;white-space:pre-wrap;font-family:system-ui,sans-serif;line-height:1.6;color:#333;border-radius:0 4px 4px 0}
-.turn{margin:1rem 0}
-.turn-label{font-size:.78rem;font-family:system-ui,sans-serif;font-weight:bold;letter-spacing:.05em;margin-bottom:.35rem;color:#888;text-transform:uppercase}
-.turn-label.user{color:#2266aa}
-.turn-label.claude{color:#a05020}
-.turn-content{background:#fafafa;border-left:3px solid #ddd;padding:.8rem 1rem;font-size:.88rem;font-family:system-ui,sans-serif;white-space:pre-wrap;line-height:1.6;color:#333;border-radius:0 4px 4px 0}
-.turn.claude .turn-content{border-left-color:#e8d5c0}
-.turn.user .turn-content{border-left-color:#c0d0e0}
-
-/* code */
-.code-wrap{overflow-x:auto;margin:1rem 0}
-pre.code-block{white-space:pre;background:#f8f8f8;padding:1rem 1.2rem;font-size:.8rem;border-left:3px solid #d0d0d0;font-family:"SF Mono",Monaco,Consolas,monospace;line-height:1.55;color:#333;border-radius:0 4px 4px 0}
-.lang{font-size:.75rem;font-family:system-ui,sans-serif;color:#aaa;margin-bottom:.2rem;letter-spacing:.04em}
-
-/* figures */
-.fig-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin:1.2rem 0}
-.fig-wrap{flex:1;min-width:280px}
-.fig-wrap img{width:100%;display:block}
-.fig-cap{font-size:.8rem;color:#777;margin-top:.4rem;font-family:system-ui,sans-serif;line-height:1.4}
-
-/* table */
-table{border-collapse:collapse;width:100%;font-size:.88rem;margin:1rem 0;font-family:system-ui,sans-serif}
-th{padding:.45rem .7rem;border-bottom:2px solid #ddd;text-align:left;font-weight:600;color:#444}
-td{padding:.4rem .7rem;border-bottom:1px solid #eee}
-tr:hover td{background:#fafafa}
-.go{color:#1a7a1a;font-weight:bold}
-.hold{color:#aa6600}
-.stop{color:#cc2222}
-.note{color:#555;font-size:.8rem;margin-top:.5rem;font-family:system-ui,sans-serif}
-.timing{font-family:system-ui,sans-serif;font-size:.8rem;color:#999;margin-top:.5rem}
-
-ul,ol{margin:.6rem 0 .6rem 1.4rem}
-li{margin:.25rem 0}
-blockquote{border-left:3px solid #ddd;padding:.5rem 1rem;color:#555;margin:1rem 0;font-style:italic}
-hr{border:none;border-top:1px solid #eee;margin:2rem 0}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; line-height: 1.65; color: #1a1a1a; background: #fff; padding: 0 1rem; }
+.page { max-width: 680px; margin: 0 auto; padding: 3rem 0 5rem; }
+h1 { font-size: 1.5rem; line-height: 1.25; font-weight: bold; margin-bottom: 0.4rem; }
+h2 { font-size: 1.1rem; font-weight: bold; margin: 2.4rem 0 0.5rem; }
+p  { margin-bottom: 1rem; }
+a  { color: #1a1a1a; }
+.byline { color: #555; font-size: 0.9rem; margin-bottom: 2.4rem; font-family: system-ui, sans-serif; line-height: 1.6; }
+hr { border: none; border-top: 1px solid #ddd; margin: 2.4rem 0; }
+.section-nav { font-family: system-ui, sans-serif; font-size: 0.82rem; color: #888; margin-bottom: 2.4rem; }
+.section-nav a { color: #555; margin-right: 1rem; text-decoration: none; }
+.experiment { border-left: 3px solid #1a1a1a; padding-left: 1.2rem; margin: 1.5rem 0; }
+.exp-label { font-family: system-ui, sans-serif; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #777; margin-bottom: 0.3rem; }
+.exp-title { font-weight: bold; font-size: 1rem; margin-bottom: 0.6rem; }
+.metric-row { display: flex; gap: 2rem; margin: 1rem 0; flex-wrap: wrap; font-family: system-ui, sans-serif; }
+.metric { display: flex; flex-direction: column; }
+.metric-val { font-size: 1.4rem; font-weight: bold; line-height: 1; }
+.metric-desc { color: #666; font-size: 0.8rem; margin-top: 0.15rem; }
+.label-inline { font-family: system-ui, sans-serif; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.07em; color: #888; margin: 0.4rem 0; display: block; }
+figcaption { font-family: system-ui, sans-serif; font-size: 0.78rem; color: #777; margin-top: 0.6rem; line-height: 1.45; }
+.panel { border: 1px solid #e0e0e0; border-radius: 3px; padding: 1rem 1.1rem; margin: 1rem 0; background: #fcfcfc; }
+.searchbar { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:0.6rem; }
+.searchbar input { background:#fff; border:1px solid #bcc6d0; border-radius:5px; padding:9px 13px; font-family:system-ui,sans-serif; font-size:0.95rem; width:230px; }
+.searchbar input:focus { outline:2px solid #3a4db8; border-color:#3a4db8; }
+.searchbar button { background:#3a4db8; color:#fff; border:none; border-radius:5px; padding:9px 16px; font-family:system-ui,sans-serif; font-size:0.88rem; cursor:pointer; }
+.chips { font-family: system-ui, sans-serif; font-size:0.78rem; color:#777; margin-bottom:0.4rem; }
+.chips a { color:#3a4db8; cursor:pointer; text-decoration:none; border-bottom:1px dotted; margin:0 0.5rem 0.3rem 0; display:inline-block; }
+svg.viz { width:100%; max-width:600px; display:block; margin:0 auto; }
+.readout { font-family: system-ui, sans-serif; font-size:0.86rem; background:#eaecf7; border-radius:4px; padding:0.65rem 0.9rem; margin-top:0.7rem; line-height:1.5; }
+.readout b { color:#3a4db8; }
+.legend { display:flex; gap:16px; font-family:system-ui,sans-serif; font-size:0.75rem; color:#555; margin-top:8px; justify-content:center; flex-wrap:wrap; }
+.legend .k { display:inline-flex; align-items:center; gap:5px; }
+.legend .k::before { content:''; display:inline-block; width:11px; height:11px; border-radius:50%; background:var(--c,#999); }
+.legend .kz::before { border-radius:2px; background:#f6d5d5; }
+.bars { font-family:system-ui,sans-serif; font-size:0.8rem; }
+.brow { display:flex; align-items:center; gap:8px; margin:3px 0; cursor:pointer; }
+.brow:hover .bfill { opacity:0.8; }
+.bname { width:104px; text-align:right; flex-shrink:0; color:#444; font-size:0.76rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.btrack { flex:1; position:relative; height:15px; background:#ecedf5; border-radius:2px; }
+.bfill { position:absolute; left:0; top:0; height:100%; border-radius:2px; }
+.bnum { width:118px; flex-shrink:0; font-size:0.71rem; color:#666; }
+footer { font-family: system-ui, sans-serif; font-size: 0.82rem; color: #888; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #eee; line-height: 1.6; }
 </style>
 </head>
 <body>
-
-<div style="font-family:system-ui,sans-serif;font-size:.8rem;color:#aaa;text-align:right;margin-bottom:2rem">Cathy Liu · <a href="mailto:cathyliu014@gmail.com" style="color:#aaa">cathyliu014@gmail.com</a></div>
-
-<h1>AI-Assisted Protein Characterization Workflow Analysis</h1>
-<p class="byline">
-  Cathy Liu &nbsp;·&nbsp; June 2026 &nbsp;·&nbsp;
-  <span class="tag">Protein Science</span>
-  <span class="tag">Lab Automation</span>
-  <span class="tag">Claude API</span>
-  <span class="tag">SPR / DSF</span>
-</p>
-
-<p>
-Medra's Physical AI Scientist platform closes a loop that wet lab science has never fully automated:
-instrument operation, result interpretation, and experimental re-design — all without a human in the
-middle. As someone who has spent years at the bench doing exactly the work that platform is built to
-automate, I wanted to explore what that loop looks like from the inside: which decision points in a
-protein characterization campaign are actually ripe for autonomous AI reasoning, and how well can
-current AI handle the judgment calls that scientists make every day?
-</p>
-<p>
-Below are two experiments I ran using the Claude API, plus a mini analysis recreating SPR and DSF
-data that reflects the kind of characterization work central to Medra's pipeline.
-</p>
-
-<hr>
-
-<h2>Experiment 1 — Mapping Autonomous Decision Points in a Protein Characterization Pipeline</h2>
-
-<p>
-I gave Claude a standard six-step protein characterization workflow (expression screen → purification
-→ QC → biophysical characterization → developability → cell-based assay) and asked it to identify
-which three steps are most amenable to fully closed-loop AI decision-making — where a human doesn't
-need to review each result before the platform acts.
-</p>
-
-<p><strong>Prompt:</strong></p>
-<div class="ai-box">You are an expert in protein science and laboratory automation. I'm designing an autonomous protein characterization pipeline for a Physical AI Scientist platform that can operate instruments with human-level dexterity and close experimental loops without human intervention.
-
-Here is a typical protein characterization workflow:
-1. Small-scale expression screen (4 constructs × 3 conditions, ExpiCHO mammalian system)
-2. Protein purification (IMAC + SEC-HPLC)
-3. QC analysis (SDS-PAGE, SEC-MALS, NanoDrop yield quantification)
-4. Biophysical characterization (DSF thermal stability, BLI/SPR binding kinetics)
-5. Developability assessment (HIC, AC-SINS, PSR)
-6. Cell-based binding assay (flow cytometry on Expi293 cells expressing target)
-
-Which 3 steps would benefit most from AI-driven autonomous decision-making — where the AI scientist could close the loop without human intervention? For each, describe (a) what decision the AI makes, (b) what quantitative thresholds or data it needs, and (c) what action it triggers next.</div>
-
-<p><strong>Claude's response</strong> <span class="timing">(28.3 s · claude-opus-4-8)</span>:</p>
-<div class="ai-box">## Step 1: Expression Screen → Construct/Condition Down-Selection
-
-Why this step: This is the highest-leverage decision point. A bad call here propagates downstream and wastes weeks of automated resources. It's also a clean optimization problem with measurable outputs.
-
-(a) Decision: Which construct × condition combinations advance to purification, and whether to trigger a re-screen with adjusted parameters (e.g., temperature shift, feed timing, DNA:PEI ratio).
-
-(b) Quantitative thresholds needed:
-- Titer from small-scale (Octet/ProA quantitation) — threshold ≥10–50 mg/L depending on program class
-- Expression rank-ordering across the 12 conditions with CV across replicates &lt;15–20% to trust a ranking
-- A predicted yield-after-purification estimate, since high crude titer ≠ high recoverable monomer
-- Historical priors: model-based expectation for this construct family (the closed loop should weight Bayesian priors from prior runs)
-
-(c) Action triggered:
-- If ≥1 construct clears threshold → advance top 1–2 to full purification
-- If all fail but trends suggest a fixable issue → autonomously launch a second optimization screen with adjusted DOE
-- If failure looks intrinsic (no expression across all conditions) → flag construct and escalate to human only here
-
----
-
-## Step 2: SEC-HPLC Purification → Fractionation &amp; Polishing Decision
-
-Why this step: Chromatograms are exactly the kind of structured, real-time signal where automated peak interpretation outperforms waiting for human review. Decisions must be made during the run (seconds matter for fraction collection).
-
-(a) Decision: Which SEC fractions to pool, whether monomer purity warrants a polishing re-run, and whether to switch elution/buffer strategy.
-
-(b) Thresholds needed:
-- % monomer by SEC peak integration (pool only fractions contributing to ≥95–98% monomer)
-- Aggregate (HMW) and fragment (LMW) percentages
-- Peak resolution (Rs) between monomer and adjacent species
-- Carryover yield budget: minimum recoverable mass to justify proceeding downstream
-
-(c) Action triggered:
-- Clean monomer peak above purity floor → auto-pool, concentrate, advance to QC
-- HMW &gt;5–10% → trigger autonomous re-injection on polishing SEC or add HIC/IEX step
-- Yield below downstream-assay budget → re-route to re-expression rather than burning material
-- Multiple peaks suggesting mixed species → hold for orthogonal QC before committing
-
----
-
-## Step 3: DSF + Developability → Go/No-Go Triage
-
-Why this step: These are red/yellow/green flag assays with well-established numeric cutoffs and weak inter-dependencies — ideal for a multi-parameter scoring function. The AI can integrate orthogonal readouts into a single developability verdict and decide what advances to expensive binding assays.
-
-(a) Decision: Whether a candidate proceeds to BLI/SPR + flow cytometry, gets deprioritized, or triggers a confirmatory re-test due to borderline data.
-
-(b) Thresholds needed:
-- DSF Tm absolute cutoff (e.g., Tm &lt; 60°C → flag) and Tm relative to reference antibody on same platform
-- HIC retention time deviation from reference (PSP/AC-SINS score thresholds)
-- Multi-parameter composite: weight purity + Tm + developability flags into a prioritization score
-
-(c) Action triggered:
-- All green → advance to full kinetics tier (SPR + cell-based)
-- Borderline Tm or purity → schedule confirmatory re-run at higher throughput before deciding
-- Hard disqualifier hit → deprioritize, log reasoning, and re-allocate SPR instrument time</div>
-
-<hr>
-
-<h2>Experiment 2 — AI Scientist Go/No-Go Reasoning: Iterative Hypothesis Refinement</h2>
-
-<p>
-I ran a three-turn conversation to test whether the AI could behave like a scientific collaborator —
-not just answering a static question, but updating its reasoning when new information arrives, exactly
-as an autonomous lab platform would need to do in real time.
-</p>
-
-<div class="turn user">
-  <div class="turn-label user">You</div>
-  <div class="turn-content">I'm running a protein expression screen for a therapeutic antibody targeting a cell-surface receptor. Data from 4 constructs after ExpiCHO expression and IMAC purification:
-
-- Construct A: yield 8 mg/L, SEC purity 94%, DSF Tm 68.3°C
-- Construct B: yield 2 mg/L, SEC purity 89%, DSF Tm 71.2°C
-- Construct C: yield 15 mg/L, SEC purity 78%, DSF Tm 65.1°C
-- Construct D: yield 5 mg/L, SEC purity 96%, DSF Tm 72.8°C
-
-As an AI scientist on an autonomous lab platform, which constructs would you advance to SPR kinetics characterization and why?</div>
-</div>
-
-<div class="turn claude">
-  <div class="turn-label claude">Claude (claude-opus-4-8)</div>
-  <div class="turn-content">## Recommended for SPR: Constructs A and D
-
-**Construct D** is the clear front-runner: highest purity (96%), highest thermostability (Tm 72.8°C), and adequate yield (5 mg/L is plenty for SPR). No real weakness.
-
-**Construct A** is a strong second: good yield (8 mg/L), high purity (94%), and reasonable Tm (68.3°C). Well-balanced with no disqualifying flag.
-
-**Construct C** — despite the highest yield (15 mg/L), 78% SEC purity is a real concern. That ~22% non-monomer fraction (likely HMW species) is problematic: aggregates confound SPR by contributing avidity artifacts and non-specific binding. I wouldn't advance it without a polishing step (SEC or AEX) first.
-
-**Construct B** — 2 mg/L yield is workable for SPR alone, but the combination of low yield and lowest purity among the high-Tm group (89%) makes it the weakest of the four. It doesn't earn a slot when A and D dominate it on multiple axes.
-
-One important caveat: none of these metrics measure target affinity, which is the actual selection criterion. If SPR throughput is cheap, there's an argument to screen all four and use biophysical data as a tiebreaker rather than a gate.</div>
-</div>
-
-<div class="turn user">
-  <div class="turn-label user">You</div>
-  <div class="turn-content">Useful. But our SPR instrument slots are limited — we can only run 2 constructs this week. Also, I just noticed construct C showed a secondary peak at ~350 kDa in the SEC trace, suggesting some aggregation.</div>
-</div>
-
-<div class="turn claude">
-  <div class="turn-label claude">Claude (claude-opus-4-8)</div>
-  <div class="turn-content">## Confirmed: Advance A and D
-
-The new SEC detail on C strengthens the original recommendation rather than changing it.
-
-**Why C is now firmly out:** A ~350 kDa secondary peak for a standard IgG (~150 kDa) is roughly dimer-to-trimer range. This matters for SPR specifically:
-- Multivalent aggregates drive avidity artifacts — you'd get kinetic constants (especially a slow off-rate) that don't reflect the monomeric IgG and won't reproduce
-- Spending a scarce slot to characterize binding of a molecule with a known CMC problem is poor resource allocation
-
-C isn't dead — it belongs in a "needs polishing + repeat SEC" queue, not the SPR queue this week.
-
-**Why D over B for the second slot:**
-- D: best biophysics (Tm 72.8°C, 96% purity) — stability/developability-favored candidate
-- A: best yield among clean constructs (8 mg/L, 94%) — manufacturability-favored candidate
-
-This pairing also gives you a principled contrast: if affinities are comparable, you have a basis to choose; if they diverge, affinity likely overrides the modest biophysical gaps.
-
-One thing I'd flag: run a fresh analytical SEC on A and D immediately pre-SPR from the same aliquot you'll inject. The C surprise is a reminder that purity can drift on storage/freeze-thaw.</div>
-</div>
-
-<div class="turn user">
-  <div class="turn-label user">You</div>
-  <div class="turn-content">Good. Now write a specific, executable decision rule — with explicit numeric thresholds — that an autonomous system could apply to any future expression screen to make this go/no-go decision without requiring a human to review individual results.</div>
-</div>
-
-<div class="turn claude">
-  <div class="turn-label claude">Claude (claude-opus-4-8)</div>
-  <div class="turn-content">## Autonomous Go/No-Go Decision Rule for SPR Advancement
-
-### Stage 1 — Hard gates (DISQUALIFY if any is true)
-
-| Gate | Threshold | Rationale |
-|------|-----------|-----------|
-| G1   | Yield &lt; 1.0 mg/L | Insufficient material for SPR + repeats |
-| G2   | SEC monomer purity &lt; 85% | Aggregate load corrupts kinetics |
-| G3   | HMW peak ≥ 5% area at apparent MW &gt; 1.5× monomer | Avidity artifacts → unreliable koff |
-| G4   | DSF Tm &lt; 60.0°C | Stability liability regardless of binding |
-| G5   | No interpretable DSF transition | Data integrity failure |
-
-### Stage 2 — Ranking score (constructs passing all gates)
-
-score = 0.45 × P_norm    # SEC purity  (developability + data quality)
-      + 0.35 × T_norm    # DSF Tm      (stability)
-      + 0.20 × Y_norm    # yield       (manufacturability)
-
-where m_norm = (m_i − m_min) / (m_max − m_min) across the passing set.
-
-### Stage 3 — Slot allocation
-
-ADVANCE = top N by score, where N = available SPR slots
-DEFER   = constructs passing gates but outside top N (re-queue next week)
-EXCLUDE = constructs failing any gate (log reason, flag for polishing or discard)
-
-### Mandatory human-escalation triggers
-- All constructs fail Stage 1 (systematic failure, not a ranking problem)
-- Top-ranked score &lt; 0.40 (all passing constructs are marginal — human should weigh program risk)
-- Replicate CV &gt; 20% on Tm or SEC purity (measurement uncertainty too high to trust auto-decision)
-
-### Applied to our screen:
-C → EXCLUDE (G2: 78% purity; G3: 350 kDa HMW ≥ 5%)
-B → EXCLUDE (borderline — depends on platform-specific G1 yield floor)
-D → ADVANCE (score ≈ 0.92)
-A → ADVANCE (score ≈ 0.74)</div>
-</div>
-<p class="timing">Total experiment 2 elapsed: 40.5 s · claude-opus-4-8</p>
-
-<hr>
-
-<h2>Mini Analysis — Protein Characterization Data: SPR Kinetics &amp; DSF Thermal Stability</h2>
-
-<p>
-To make this concrete, I generated representative SPR and DSF data for the four constructs from
-Experiment 2, then analyzed them using standard Python tools. Code and figures below.
-</p>
-
-<div class="lang">PYTHON — SPR kinetics analysis (biopandas + lmfit)</div>
-<div class="code-wrap"><pre class="code-block">import pandas as pd
-import numpy as np
-from lmfit import Model
-
-# SPR sensorgram: association (0-180s) + dissociation (180-360s)
-# kon = 1.5e5 M-1s-1, koff = 2e-3 s-1  →  Kd = 13.3 nM
-def spr_model(t, kon, koff, C, Rmax):
-    kobs = kon * C + koff
-    return np.where(t <= 180,
-        Rmax * C/(C + koff/kon) * (1 - np.exp(-kobs * t)),
-        Rmax * C/(C + koff/kon) * np.exp(-koff * (t - 180)))
-
-concs = [3.125e-9, 12.5e-9, 50e-9, 200e-9]  # M
-
-# Fit each concentration curve
-results = {}
-for C in concs:
-    mod = Model(spr_model)
-    params = mod.make_params(kon=1.5e5, koff=2e-3, C=C, Rmax=120)
-    # ... fit to experimental data ...
-    results[C] = {"kon": 1.52e5, "koff": 1.98e-3, "Kd_nM": 13.0}
-
-print(f"Kd = {results[concs[-1]]['Kd_nM']:.1f} nM  "
-      f"(kon = {results[concs[-1]]['kon']:.2e} M-1s-1, "
-      f"koff = {results[concs[-1]]['koff']:.3e} s-1)")</pre></div>
-
-<div class="lang">R — DSF Tm fitting (nls + ggplot2 style)</div>
-<div class="code-wrap"><pre class="code-block">library(tidyverse)
-
-# Boltzmann sigmoid fit to raw DSF fluorescence
-boltzmann <- function(T, Tm, slope, F_min, F_max) {
-  F_min + (F_max - F_min) / (1 + exp((Tm - T) / slope))
-}
-
-dsf_data <- read_csv("dsf_raw.csv")   # cols: temp, construct, RFU
-
-fits <- dsf_data |>
-  group_by(construct) |>
-  summarise(
-    Tm = nls(RFU ~ boltzmann(temp, Tm, slope, F_min, F_max),
-             start = list(Tm=70, slope=3, F_min=200, F_max=8000),
-             data = cur_data()) |> coef() |> _[["Tm"]],
-    .groups = "drop"
-  )
-
-# Results:  A: 68.3°C  B: 71.2°C  C: 65.1°C  D: 72.8°C</pre></div>
-
-<div class="fig-row">
-  <div class="fig-wrap">
-    <img src="spr.svg" alt="SPR sensorgram showing binding kinetics at 4 analyte concentrations">
-    <p class="fig-cap"><strong>Fig. 1</strong> — SPR sensorgram, Construct A (representative). Four analyte concentrations (3.1–200 nM). Global fit: K<sub>d</sub> = 13.3 nM, k<sub>on</sub> = 1.5 × 10<sup>5</sup> M<sup>−1</sup>s<sup>−1</sup>, k<sub>off</sub> = 2.0 × 10<sup>−3</sup> s<sup>−1</sup>. Dashed line marks association/dissociation transition at 180 s.</p>
+<div class="page">
+
+  <h1>Exploratory Analyses Inspired by Medra</h1>
+  <div class="byline">
+    Cathy Liu &nbsp;&middot;&nbsp; Computational Protein Science &nbsp;&middot;&nbsp; cathyliu014@gmail.com<br>
+    Prepared for Medra, San Francisco &middot; for the Research Associate, Protein role<br>
+    Personal exploratory project, July 2026
   </div>
-  <div class="fig-wrap">
-    <img src="dsf.svg" alt="DSF melting curves showing Tm for constructs A and D">
-    <p class="fig-cap"><strong>Fig. 2</strong> — DSF thermal stability (−dRFU/dT). Constructs A (T<sub>m</sub> = 68.3°C) and D (T<sub>m</sub> = 72.8°C) shown as representative advances. Higher T<sub>m</sub> correlates with improved manufacturability and storage stability.</p>
+
+  <div class="section-nav">
+    <a href="#motivation">Motivation</a>
+    <a href="#a1">Developability explorer</a>
+    <a href="#a2">Riskiest profiles</a>
+    <a href="#relevance">Relevance</a>
   </div>
+
+  <p>
+    Medra is building an autonomous platform that runs protein characterization end to end, the kind of biophysical
+    panel a Research Associate sets up every day: expression titer, thermal stability by DSF, hydrophobicity by HIC,
+    self-interaction by AC-SINS and BLI, and non-specificity by PSR. The hard part is not running the assays, it is
+    reading twelve numbers at once and deciding whether a molecule is developable or should be dropped.
+  </p>
+  <p>
+    I built a small tool over a landmark reference set so you can look up any clinical-stage antibody and see its
+    full biophysical profile against the pack, with the same red flags a triage step would raise.
+  </p>
+
+  <hr id="motivation">
+
+  <h2>How it works</h2>
+  <p>
+    Every antibody here was expressed and put through the same twelve assays. Type an antibody below and the chart
+    places it on each assay relative to all the others, with the worst tenth of molecules marked as a red flag. A
+    clean molecule sits near the middle of every row; a risky one drifts into the flagged zone on several.
+  </p>
+
+  <hr id="a1">
+
+  <h2>Analysis 1 &mdash; Look up any antibody</h2>
+  <div class="experiment">
+    <div class="exp-label">Method</div>
+    <div class="exp-title">The twelve-assay developability profile, per antibody</div>
+    <p style="margin-top:0.6rem; font-size:0.92rem;">
+      Type an antibody or click one of the suggestions. Adalimumab and trastuzumab are clean, approved molecules;
+      bococizumab and briakinumab are late-stage candidates that flag on self-interaction and non-specificity, the
+      properties that sink a program.
+    </p>
+  </div>
+
+  <div class="panel">
+    <div class="searchbar">
+      <input id="search" list="ablist" placeholder="e.g. adalimumab" autocomplete="off">
+      <datalist id="ablist"></datalist>
+      <button onclick="pick(document.getElementById('search').value)">Profile</button>
+    </div>
+    <div class="chips">Try:
+      <a onclick="pick('adalimumab')">adalimumab</a><a onclick="pick('trastuzumab')">trastuzumab</a><a onclick="pick('bococizumab')">bococizumab</a><a onclick="pick('briakinumab')">briakinumab</a><a onclick="pick('bevacizumab')">bevacizumab</a><a onclick="pick('rituximab')">rituximab</a>
+    </div>
+    <svg id="scatter" class="viz" viewBox="0 0 600 470"></svg>
+    <div class="legend" id="legend"></div>
+    <div class="readout" id="readout"></div>
+    <figcaption>Jain et al., PNAS 2017, "Biophysical properties of the clinical-stage antibody landscape." 137 clinical-stage antibodies, each expressed as IgG1 and run through 12 biophysical assays. A red flag marks the worst 10% of molecules on that assay.</figcaption>
+  </div>
+
+  <div class="metric-row">
+    <div class="metric"><span class="metric-val">137</span><span class="metric-desc">clinical-stage antibodies</span></div>
+    <div class="metric"><span class="metric-val">12</span><span class="metric-desc">biophysical assays</span></div>
+    <div class="metric"><span class="metric-val" id="m-dir">0 flags</span><span class="metric-desc" id="m-dir-d">adalimumab</span></div>
+  </div>
+
+  <hr id="a2">
+
+  <h2>Analysis 2 &mdash; The riskiest profiles</h2>
+  <div class="experiment">
+    <div class="exp-label">Result</div>
+    <div class="exp-title">Antibodies that flag on the most assays</div>
+  </div>
+  <div class="panel">
+    <span class="label-inline">number of red-flagged assays out of 12 &middot; click an antibody to profile it</span>
+    <div class="bars" id="bars"></div>
+  </div>
+  <p>
+    The molecules that flag most are late-stage candidates rather than approved drugs, and their flags cluster in
+    self-interaction and non-specificity, exactly the liabilities that show up as poor pharmacokinetics or
+    immunogenicity down the line. Approved antibodies almost never carry more than a flag or two. Catching this early,
+    on the bench, is the decision an autonomous platform has to get right.
+  </p>
+
+  <hr id="relevance">
+
+  <h2>Why this matters for Medra</h2>
+  <p>
+    An AI scientist that closes the loop has to turn raw assay output into a call: advance, repeat, or drop. This
+    tool is a small version of that reasoning layer, anchored on a real reference set, and it speaks the same language
+    as the characterization pipeline in the role, HIC, AC-SINS, PSR, DSF, BLI. I am comfortable both at the bench
+    generating this data and in code turning it into a decision.
+  </p>
+
+  <h2>What I would bring</h2>
+  <p>
+    My background spans hands-on protein and cell work and computational analysis. I am comfortable with expression
+    and biophysical characterization, careful record keeping, and building tools that make a dataset usable by a
+    team. I would be glad to help run and tighten the protein characterization workflows on the platform.
+  </p>
+
+  <h2>Methods note</h2>
+  <p style="font-size:0.9rem; color:#444;">
+    Data: Jain et al., PNAS 2017 (Supplementary Dataset), 137 clinical-stage antibodies expressed as matched IgG1 and
+    evaluated across 12 biophysical assays. For each assay a molecule is placed on the observed range of all
+    antibodies, and flagged if it falls in the worst 10% in the unfavourable direction (for example high HIC
+    retention, high AC-SINS, or low Fab Tm). The flag threshold is a transparent per-assay percentile chosen here for
+    illustration, not the exact cutoffs from the paper, and some assays have missing values for a few molecules.
+  </p>
+
+  <footer>
+    Cathy Liu &nbsp;&middot;&nbsp; cathyliu014@gmail.com &nbsp;&middot;&nbsp; 415-216-3799<br>
+    Epilepsy neurostimulation project, <a href="https://arxiv.org/abs/2606.04339">arXiv:2606.04339</a>
+  </footer>
+
 </div>
 
-<table>
-  <thead>
-    <tr><th>Construct</th><th>Yield (mg/L)</th><th>SEC purity (%)</th><th>DSF T<sub>m</sub> (°C)</th><th>HMW species</th><th>SPR Decision</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>A</td><td>8.0</td><td>94</td><td>68.3</td><td>None detected</td><td class="go">ADVANCE</td></tr>
-    <tr><td>B</td><td>2.0</td><td>89</td><td>71.2</td><td>Trace (~2%)</td><td class="hold">DEFER</td></tr>
-    <tr><td>C</td><td>15.0</td><td>78</td><td>65.1</td><td>350 kDa (~8%)</td><td class="stop">EXCLUDE</td></tr>
-    <tr><td>D</td><td>5.0</td><td>96</td><td>72.8</td><td>None detected</td><td class="go">ADVANCE</td></tr>
-  </tbody>
-</table>
-<p class="note">Decision rule applied: Stage 1 hard gates (purity &lt; 85%, HMW ≥ 5% at &gt;1.5× monomer MW, Tm &lt; 60°C); Stage 2 composite score weighted 0.45 purity + 0.35 Tm + 0.20 yield.</p>
-
-<hr>
-
-<h2>Why This Matters for Medra</h2>
-
-<ul>
-  <li><strong>Closing the loop requires more than instrument control.</strong> The hardest part of autonomous protein science isn't pipetting — it's knowing when to re-screen, when to polish, and when to escalate. Experiment 1 maps exactly which decision points in a standard campaign a Physical AI Scientist can own end-to-end.</li>
-  <li><strong>Good data hygiene is a prerequisite for autonomous decisions.</strong> Construct C would have wasted a precious SPR slot if the ~350 kDa HMW peak hadn't been flagged. Medra's platform needs scientists who understand why clean SEC is a functional requirement, not just a QC box — and who can tune detection thresholds accordingly.</li>
-  <li><strong>Autonomous doesn't mean unsupervised.</strong> The decision rule in Experiment 2 builds in explicit human-escalation triggers for edge cases. Knowing where to hold the boundary between autonomous and supervised is as important as the automation itself.</li>
-</ul>
-
-<h2>Concrete Contributions</h2>
-
-<ul>
-  <li><strong>Protein expression and characterization expertise:</strong> hands-on ExpiCHO/Expi293 mammalian expression, IMAC + SEC purification, SPR (Biacore), BLI (Octet), DSF, flow cytometry — the exact workflow Medra's platform is automating</li>
-  <li><strong>Workflow translation:</strong> experience writing SOPs that can be handed to non-scientists or automated systems — the same precision required to encode human judgment into a machine-executable decision rule</li>
-  <li><strong>Data analysis:</strong> Python (pandas, lmfit, biopandas) and R (nls, tidyverse) for kinetics fitting, QC metrics, and characterization data pipelines</li>
-  <li><strong>AI as a scientific tool:</strong> as shown above, actively using LLMs to reason about experimental design — not just for writing, but for decision-making and hypothesis generation</li>
-</ul>
-
-<hr>
-
-<p class="note"><strong>Methods note.</strong> All Claude API calls used model <code>claude-opus-4-8</code>, run June 2026. SVG figures generated with a seeded LCG random number generator in Python (no external libraries) — fully reproducible. SPR kinetics modeled using Langmuir 1:1 binding kinetics: k<sub>on</sub> = 1.5 × 10<sup>5</sup> M<sup>−1</sup>s<sup>−1</sup>, k<sub>off</sub> = 2.0 × 10<sup>−3</sup> s<sup>−1</sup>. DSF derivative computed analytically from a Boltzmann sigmoid fluorescence model.</p>
-
+<script src="data.js?v=1"></script>
+<script src="app.js?v=1"></script>
 </body>
 </html>
